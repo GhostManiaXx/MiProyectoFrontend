@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOS-VITAL | Ayuda en camino</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; text-align: center; color: #333; }
+        .card { background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 90%; max-width: 400px; }
+        .logo { color: #e74c3c; font-size: 2rem; font-weight: bold; margin-bottom: 1rem; }
+        h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        p { color: #666; margin-bottom: 1.5rem; }
+        .btn { background-color: #e74c3c; color: white; border: none; padding: 1rem 2rem; border-radius: 50px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: transform 0.2s, background-color 0.2s; width: 100%; }
+        .btn:hover { background-color: #c0392b; transform: scale(1.02); }
+        .btn:active { transform: scale(0.98); }
+        .status { margin-top: 1rem; font-size: 0.9rem; color: #27ae60; display: none; }
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #e74c3c; border-radius: 50%; width: 30px; height: 30px; animation: spin 2s linear infinite; display: none; margin: 1rem auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="logo">🆘 SOS-VITAL</div>
+        <h1>¡Has encontrado a alguien!</h1>
+        <p>Esta persona o mascota cuenta con el sistema de protección SOS-VITAL.</p>
+        <p>Por favor, presiona el botón para enviar tu ubicación actual al dueño y ayudar a que regresen a casa.</p>
+
+        <button class="btn" onclick="enviarUbicacion()">📍 ENVIAR MI UBICACIÓN</button>
+
+        <div id="loader" class="loader"></div>
+        <div id="status" class="status">✅ Ubicación enviada con éxito. El dueño ha sido notificado.</div>
+    </div>
+
+    <script>
+        function enviarUbicacion() {
+            const btn = document.querySelector('.btn');
+            const status = document.getElementById('status');
+            const loader = document.getElementById('loader');
+
+            btn.style.display = 'none';
+            loader.style.display = 'block';
+
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    const mapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
+
+                    console.log("Enviando ubicación:", mapsUrl);
+
+                    // Simulación de envío (En una versión real, esto llamaría a una API de SMS/Email)
+                    setTimeout(() => {
+                        loader.style.display = 'none';
+                        status.style.display = 'block';
+                        status.innerHTML = `✅ ¡Ubicación enviada! <br><br> Coordenadas: ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+
+                        // OPCIONAL: Abrir WhatsApp del dueño con el link (Para la demo)
+                        // window.location.href = `https://wa.me/TUNUMERO?text=He+encontrado+a+tu+mascota+en+esta+ubicacion:+${mapsUrl}`;
+                    }, 2000);
+
+                }, function(error) {
+                    loader.style.display = 'none';
+                    btn.style.display = 'block';
+                    alert("Error: Para ayudar, necesitamos que permitas el acceso a tu ubicación.");
+                });
+            } else {
+                alert("Tu navegador no soporta geolocalización.");
+            }
+        }
+    </script>
+</body>
+</html>

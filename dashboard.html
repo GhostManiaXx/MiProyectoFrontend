@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
+    <title>Panel de Control | SOS-VITAL</title>
+</head>
+<body>
+    <header><h1>Panel de Gestión</h1></header>
+    <div class="container">
+        <div class="card" id="loginForm">
+            <h3>Ingrese código de acceso</h3>
+            <input type="text" id="code" placeholder="Código (ej: SOSV-2500-001)">
+            <button onclick="validar()">Ingresar</button>
+        </div>
+        <div class="card" id="dashboard" style="display:none;">
+            <h3>Mis Mascotas Protegidas</h3>
+            <p>Generar código QR para nueva mascota:</p>
+            <input type="text" id="petName" placeholder="Nombre de la mascota">
+            <button onclick="generarQR()">Generar QR</button>
+            <div id="qrResult"></div>
+        </div>
+    </div>
+    <script>
+        const validCodes = ['SOSV-2500-001', 'SOSV-2500-002'];
+        function validar() {
+            const code = document.getElementById('code').value;
+            if (validCodes.includes(code)) {
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                localStorage.setItem('loggedIn', 'true');
+            } else { alert('Código inválido'); }
+        }
+        function generarQR() {
+            const name = document.getElementById('petName').value;
+            document.getElementById('qrResult').innerHTML = '<p>QR generado para ' + name + ' (Escaneable en demo)</p>';
+        }
+    </script>
+</body>
+</html>
