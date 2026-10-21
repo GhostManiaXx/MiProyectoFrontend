@@ -15,12 +15,47 @@
             <div id="status" style="margin-top:20px; font-weight:bold; color:var(--navy);"></div>
         </div>
     </div>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function(){
+            emailjs.init("vjxzHWFZwil1xtszB"); // TODO: Reemplazar
+        })();
+    </script>
     <script>
         const params = new URLSearchParams(window.location.search);
-        document.getElementById('itemName').innerText = "Reporte de: " + params.get('nombre');
+        const nombre = params.get('nombre') || 'Desconocido';
+        const email = params.get('email') || '';
+        const telefono = params.get('telefono') || '';
+        document.getElementById('itemName').innerText = "Reporte de: " + nombre;
+
+        let contacto = '';
+        if (email) contacto += 'Correo: ' + email + ' ';
+        if (telefono) contacto += 'Teléfono: ' + telefono;
+        if (contacto) {
+            const p = document.createElement('p');
+            p.innerText = 'Contacto del dueño: ' + contacto;
+            document.querySelector('.card').insertBefore(p, document.querySelector('button'));
+        }
+
         function enviarUbicacion() {
             navigator.geolocation.getCurrentPosition(pos => {
-                document.getElementById('status').innerText = "✅ Ubicación enviada al sistema central: " + pos.coords.latitude + ", " + pos.coords.longitude;
+                const lat = pos.coords.latitude;
+                const lng = pos.coords.longitude;
+                const mapsUrl = 'https://www.google.com/maps?q=' + lat + ',' + lng;
+
+                // Enviar correo vía EmailJS
+                emailjs.send("Vanguard", "template_9i9107p", {
+                    nombre: nombre,
+                    ubicacion: mapsUrl,
+                    email_destino: email
+                }).then(function() {
+                    document.getElementById('status').innerText = '¡Ubicación enviada al dueño con éxito!';
+                }, function(error) {
+                    document.getElementById('status').innerText = 'Error al enviar: ' + JSON.stringify(error);
+                });
+
+            }, err => {
+                document.getElementById('status').innerText = 'Error al obtener ubicación: ' + err.message;
             });
         }
     </script>

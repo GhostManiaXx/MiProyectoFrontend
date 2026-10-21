@@ -17,6 +17,8 @@
             <h3>Mis Registros</h3>
             <p>Generar código para nuevo integrante o artículo:</p>
             <input type="text" id="itemName" placeholder="Nombre (Mascota, Niño, Objeto)">
+            <input type="email" id="itemEmail" placeholder="Correo electrónico">
+            <input type="tel" id="itemPhone" placeholder="Teléfono (opcional)">
             <button onclick="generarQR()">Generar Código de Emergencia</button>
             <div id="qrResult" style="margin-top:20px; padding:15px; border:1px solid #ccc; background:#f9f9f9;"></div>
         </div>
@@ -31,9 +33,14 @@
             } else { alert('Código inválido'); }
         }
         function generarQR() {
-            const name = document.getElementById('itemName').value;
+            const name = document.getElementById('itemName').value.trim();
+            const email = document.getElementById('itemEmail').value.trim();
+            const phone = document.getElementById('itemPhone').value.trim();
+            if (!name) { alert('Ingresa un nombre'); return; }
+            if (!email && !phone) { alert('Ingresa al menos un correo o teléfono de contacto'); return; }
             const uniqueID = Math.random().toString(36).substr(2, 9);
-            const demoUrl = window.location.href.replace('dashboard.html', 'reporte.html') + '?id=' + uniqueID + '&nombre=' + encodeURIComponent(name);
+            const baseUrl = window.location.href.replace('dashboard.html', 'reporte.html');
+            const demoUrl = baseUrl + '?id=' + uniqueID + '&nombre=' + encodeURIComponent(name) + '&email=' + encodeURIComponent(email) + '&telefono=' + encodeURIComponent(phone);
             document.getElementById('qrResult').innerHTML =
                 '<strong>Código para: ' + name + '</strong><br>' +
                 '<p>URL de prueba (Copia y pega en tu celular para ver el reporte):<br>' +
