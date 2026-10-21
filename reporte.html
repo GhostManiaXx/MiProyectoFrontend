@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
+    <title>Reporte SOS-VITAL</title>
+</head>
+<body>
+    <header><h1>Alerta SOS-VITAL</h1></header>
+    <div class="container">
+        <div class="card">
+            <h3 id="itemName">Cargando datos...</h3>
+            <p>Se ha detectado una emergencia. Por favor, comparta la ubicación para ayudar.</p>
+            <button onclick="enviarUbicacion()">Enviar Ubicación Actual</button>
+            <div id="status" style="margin-top:20px; font-weight:bold; color:var(--navy);"></div>
+        </div>
+    </div>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        document.getElementById('itemName').innerText = "Reporte de: " + params.get('nombre');
+        function enviarUbicacion() {
+            navigator.geolocation.getCurrentPosition(pos => {
+                document.getElementById('status').innerText = "✅ Ubicación enviada al sistema central: " + pos.coords.latitude + ", " + pos.coords.longitude;
+            });
+        }
+    </script>
+</body>
+</html>

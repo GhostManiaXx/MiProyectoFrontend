@@ -9,16 +9,16 @@
     <header><h1>Panel de Gestión</h1></header>
     <div class="container">
         <div class="card" id="loginForm">
-            <h3>Ingrese código de acceso</h3>
-            <input type="text" id="code" placeholder="Código (ej: SOSV-2500-001)">
+            <h3>Acceso de Usuario</h3>
+            <input type="text" id="code" placeholder="Código de pack (ej: SOSV-2500-001)">
             <button onclick="validar()">Ingresar</button>
         </div>
         <div class="card" id="dashboard" style="display:none;">
-            <h3>Mis Mascotas Protegidas</h3>
-            <p>Generar código QR para nueva mascota:</p>
-            <input type="text" id="petName" placeholder="Nombre de la mascota">
-            <button onclick="generarQR()">Generar QR</button>
-            <div id="qrResult"></div>
+            <h3>Mis Registros</h3>
+            <p>Generar código para nuevo integrante o artículo:</p>
+            <input type="text" id="itemName" placeholder="Nombre (Mascota, Niño, Objeto)">
+            <button onclick="generarQR()">Generar Código de Emergencia</button>
+            <div id="qrResult" style="margin-top:20px; padding:15px; border:1px solid #ccc; background:#f9f9f9;"></div>
         </div>
     </div>
     <script>
@@ -28,12 +28,16 @@
             if (validCodes.includes(code)) {
                 document.getElementById('loginForm').style.display = 'none';
                 document.getElementById('dashboard').style.display = 'block';
-                localStorage.setItem('loggedIn', 'true');
             } else { alert('Código inválido'); }
         }
         function generarQR() {
-            const name = document.getElementById('petName').value;
-            document.getElementById('qrResult').innerHTML = '<p>QR generado para ' + name + ' (Escaneable en demo)</p>';
+            const name = document.getElementById('itemName').value;
+            const uniqueID = Math.random().toString(36).substr(2, 9);
+            const demoUrl = window.location.href.replace('dashboard.html', 'reporte.html') + '?id=' + uniqueID + '&nombre=' + encodeURIComponent(name);
+            document.getElementById('qrResult').innerHTML =
+                '<strong>Código para: ' + name + '</strong><br>' +
+                '<p>URL de prueba (Copia y pega en tu celular para ver el reporte):<br>' +
+                '<a href="' + demoUrl + '" target="_blank">' + demoUrl + '</a></p>';
         }
     </script>
 </body>
